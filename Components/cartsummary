@@ -1,0 +1,185 @@
+import '/cart_order_history/cart_product/cart_product_widget.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'cart_summary_model.dart';
+export 'cart_summary_model.dart';
+
+class CartSummaryWidget extends StatefulWidget {
+  const CartSummaryWidget({
+    super.key,
+    bool? showTotal,
+  }) : this.showTotal = showTotal ?? false;
+
+  final bool showTotal;
+
+  @override
+  State<CartSummaryWidget> createState() => _CartSummaryWidgetState();
+}
+
+class _CartSummaryWidgetState extends State<CartSummaryWidget> {
+  late CartSummaryModel _model;
+
+  @override
+  void setState(VoidCallback callback) {
+    super.setState(callback);
+    _model.onUpdate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _model = createModel(context, () => CartSummaryModel());
+  }
+
+  @override
+  void dispose() {
+    _model.maybeDispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: 750,
+      ),
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 4,
+            color: Color(0x33000000),
+            offset: Offset(
+              0,
+              2,
+            ),
+          )
+        ],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              FFLocalizations.of(context).getText(
+                '5k7z7b3m' /* Your Cart */,
+              ),
+              style: FlutterFlowTheme.of(context).headlineSmall.override(
+                    fontFamily: 'Outfit',
+                    letterSpacing: 0,
+                  ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0, 4, 0, 12),
+              child: Text(
+                FFLocalizations.of(context).getText(
+                  'c65b62qg' /* Below is the list of items in ... */,
+                ),
+                style: FlutterFlowTheme.of(context).labelMedium.override(
+                      fontFamily: 'Readex Pro',
+                      letterSpacing: 0,
+                    ),
+              ),
+            ),
+            Builder(
+              builder: (context) {
+                final cartItems = FFAppState().myCart.toList();
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, cartItemsIndex) {
+                    final cartItemsItem = cartItems[cartItemsIndex];
+                    return wrapWithModel(
+                      model: _model.cartProductModels.getModel(
+                        cartItemsItem.id,
+                        cartItemsIndex,
+                      ),
+                      updateCallback: () => setState(() {}),
+                      updateOnChange: true,
+                      child: CartProductWidget(
+                        key: Key(
+                          'Key7cs_${cartItemsItem.id}',
+                        ),
+                        product: cartItemsItem,
+                        cartItem: true,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+            if (widget.showTotal)
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0, 8, 0, 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          FFLocalizations.of(context).getText(
+                            'dzlfk32x' /* Sub Total */,
+                          ),
+                          style: FlutterFlowTheme.of(context)
+                              .titleMedium
+                              .override(
+                                fontFamily: 'Outfit',
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
+                                fontSize: 20,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
+                        FlutterFlowIconButton(
+                          borderColor: Colors.transparent,
+                          borderRadius: 30,
+                          borderWidth: 1,
+                          buttonSize: 36,
+                          icon: Icon(
+                            Icons.info_outlined,
+                            color: FlutterFlowTheme.of(context).secondaryText,
+                            size: 18,
+                          ),
+                          onPressed: () {
+                            print('IconButton pressed ...');
+                          },
+                        ),
+                      ],
+                    ),
+                    Text(
+                      FFLocalizations.of(context).getText(
+                        '0qgugqcy' /* 230.20 */,
+                      ),
+                      style: FlutterFlowTheme.of(context).displaySmall.override(
+                            fontFamily: 'Outfit',
+                            letterSpacing: 0,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
